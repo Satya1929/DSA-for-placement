@@ -34,7 +34,7 @@ using namespace std;
 // class Solution { //746. Min Cost Climbing Stairs , recursion + memorization
 // public:
 //     //all possible count = recursion
-//     //overlapping so DP
+//     //overlapping so DP 
 //     //step 1 - represent in terms of index = zero based index
 //     //all cases incorporate
 //     //min find of them (use basic formula by striver)
