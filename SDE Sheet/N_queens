@@ -1,0 +1,143 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution_brute
+{
+public :
+
+    bool isSafe(int row, int col, vector<string> board, int n) {
+        // store for re-initialize
+        int duprow = row;
+        int dupcol = col;
+
+
+        //checking North-west diagonal
+        while(row >= 0 && col >= 0) {
+            if(board[row][col] == 'Q') return false;
+            row--;
+            col--;
+        }
+
+        //checking row
+        col = dupcol;
+        row = duprow;
+        while(col >= 0) {
+            if(board[row][col] == 'Q') return false;
+            col--;
+        }
+
+        //checking North-east diagonal
+        row = duprow;
+        col = dupcol;
+        while(row < n && col >= 0) {
+            if(board[row][col] == 'Q') return false;
+            row++;
+            col--;
+        }
+
+        return true; //otherwise
+    }
+
+
+    void solve(int col, vector<string> &board, vector<vector<string>> &ans, int n) 
+    {
+        //base case of recursion
+        if(col == n)  //not n-1 because after full n-1 traverse then only and board banega
+        {
+            ans.push_back(board);  // store answer board configuration in ans
+            return;
+        }
+
+        for(int row = 0; row < n; row++) {
+            if(isSafe(row, col, board, n)) {
+                board[row][col] = 'Q';
+
+                solve(col+1, board, ans, n); // go for doing same for next column until base case reach , if reach then store the board configuration in ans
+                
+                board[row][col] = '.';  // while backtrack (if u get answer configuration after traversing all column) or (u get no safe zone in the next column)
+            }
+        }
+    }
+
+
+    vector<vector<string>> solveNQueens(int n) 
+    {
+        vector<vector<string>> ans; // to store answer
+        vector<string> board(n, string(n, '.')); // board of n*n size with '.' in all places as per question
+        // not "." (bcz a single character in a string must be enclose by '' and not " ")
+
+        solve(0, board, ans, n); // function with column 0 pass
+
+        return ans;
+    }
+
+}
+
+
+class Solution_optimal
+{
+public :
+    void solve(int col, vector<string> &board, vector<vector<string>> &ans,
+                vector<int> &leftRow,vector<int> &upperDiagonal, vector<int> &lowerDiagonal, int n) {
+
+        //base case of recursion
+        if(col == n)  //not n-1 because after full n-1 traverse then only and board banega
+        {
+            ans.push_back(board);  // store answer board configuration in ans
+            return;
+        }
+
+        for (int row = 0; row < n; row++) {
+            if (leftRow[row] == 0 && lowerDiagonal[row + col] == 0
+                && upperDiagonal[n - 1 + col - row] == 0) {
+
+                board[row][col] = 'Q';
+                leftRow[row] = 1;
+                lowerDiagonal[row + col] = 1;
+                upperDiagonal[n - 1 + col - row] = 1;
+
+                solve(col + 1, board, ans, leftRow, upperDiagonal, lowerDiagonal, n);
+
+                board[row][col] = '.';
+                leftRow[row] = 0;
+                lowerDiagonal[row + col] = 0;
+                upperDiagonal[n - 1 + col - row] = 0;
+            }
+        }
+    }
+    
+    vector<vector<string>> solveNQueens(int n) {
+        vector<vector<string>> ans; // to store answer
+        vector<string> board(n, string(n, '.')); // board of n*n size with '.' in all places as per question
+        // not "." (bcz a single character in a string must be enclose by '' and not " ")
+
+        vector<int> leftRow(n, 0), upperDiagonal(2 * n - 1, 0), lowerDiagonal(2 * n - 1, 0);
+
+        solve(0, board, ans, leftRow, upperDiagonal, lowerDiagonal, n);
+        return ans;
+    }
+
+// Initialization of leftRow:
+// vector<int> leftRow(n, 0);
+// This creates a vector named leftRow with n elements, all initialized to 0.
+// This vector is used to keep track of whether a queen is placed in a particular row. 
+// If leftRow[i] is 1, it means a queen is placed in the i-th row
+
+// Initialization of upperDiagonal: (NORTH-WEST diagonal)
+// vector<int> upperDiagonal(2 * n - 1, 0); 
+// This creates a vector named upperDiagonal with 2 * n - 1 elements, all initialized to 0.
+// This vector is used to keep track of whether a queen is placed in a particular upper diagonal. 
+// The size 2 * n - 1 is chosen because there are 2 * n - 1 possible diagonals in an n x n chessboard. 
+// eg n= 8 columns , have sum = 0 to 14 hence array of size 15 needed for storing numbers from 0 to 14  
+// If upperDiagonal[i] is 1, it means a queen is placed in the i-th upper diagonal.
+
+// Initialization of lowerDiagonal: (NORTH-East diagonal)
+// vector<int> lowerDiagonal(2 * n - 1, 0);
+// This creates a vector named lowerDiagonal with 2 * n - 1 elements, all initialized to 0.
+// This vector is used to keep track of whether a queen is placed in a particular lower diagonal. 
+// Similar to upperDiagonal, the size 2 * n - 1 is chosen because there are 2 * n - 1 possible diagonals in an n x n chessboard. 
+// eg n= 8 columns , have sum = 0 to 14 hence array of size 15 needed for storing numbers from 0 to 14  
+// If lowerDiagonal[i] is 1, it means a queen is placed in the i-th lower diagonal.
+
+}
+
