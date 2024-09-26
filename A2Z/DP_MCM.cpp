@@ -34,6 +34,7 @@ int cost(vector<int> &v, int i, int j, vector<vector<int>> &mem_matrix)
     return mini;
 }
 
+
 int matrixMultiplication(vector<int> &v, int n)
 {
     int i = 1;
