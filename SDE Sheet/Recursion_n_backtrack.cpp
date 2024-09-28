@@ -164,7 +164,139 @@ void permute(vector<int>& v)  // print all permutations using c++ STL without lo
     cout << endl;
 }
 
+void nextPermutation(vector<int>& nums) {
 
+    next_permutation(nums.begin(), nums.end());
+    
+}
+
+
+class Solution {//51. N-Queens // Most optimized = three direction hasharray made
+public:
+
+    void solve(int col, vector<string> &board, vector<vector<string>> &ans,
+               vector<int> &leftRow,
+               vector<int> &upperDiagonal, vector<int> &lowerDiagonal, int n) 
+    {
+        if (col == n) {
+            ans.push_back(board);
+            return;
+        }
+
+        for (int row = 0; row < n; row++) {
+            if (leftRow[row] == 0 && lowerDiagonal[row + col] == 0
+                && upperDiagonal[n - 1 + col - row] == 0) {
+
+                board[row][col] = 'Q';
+                leftRow[row] = 1;
+                lowerDiagonal[row + col] = 1;
+                upperDiagonal[n - 1 + col - row] = 1;
+
+                solve(col + 1, board, ans, leftRow, upperDiagonal, lowerDiagonal, n);
+
+                board[row][col] = '.';
+                leftRow[row] = 0;
+                lowerDiagonal[row + col] = 0;
+                upperDiagonal[n - 1 + col - row] = 0;
+            }
+        }
+    }
+    
+    vector<vector<string>> solveNQueens(int n) {
+        vector<vector<string>> ans;
+        vector<string> board(n);
+        string s(n, '.');
+        for (int i = 0; i < n; i++) {
+            board[i] = s;
+        }
+
+        vector<int> leftRow(n, 0), upperDiagonal(2 * n - 1, 0), lowerDiagonal(2 * n - 1, 0);
+        solve(0, board, ans, leftRow, upperDiagonal, lowerDiagonal, n);
+        return ans;
+    }
+
+
+
+};
+
+
+
+
+class Solution {//51. N-Queens // Not optimized = three direction check do by going to each cell
+    public:
+
+    bool isSafe(int row, int col, vector<string> board, int n) {
+        int duprow = row; //store present cell's row and column in temporary variables
+        int dupcol = col;
+
+        //left upper diagonal
+        while (row >= 0 && col >= 0) {
+            if (board[row][col] == 'Q') 
+                return false;
+            row--;
+            col--;    
+        }
+
+        col = dupcol; // bring attention to present cell's row and column
+        row = duprow;
+
+        //left check (same row)
+        while (col >= 0) {
+            if (board[row][col] == 'Q') 
+                return false;
+            col--;
+        }
+
+        row = duprow; // bring attention to present cell's row and column
+        col = dupcol;
+
+        //left lower diagonal
+        while (row < n && col >= 0) {
+            if (board[row][col] == 'Q') 
+                return false;
+            row++;
+            col--;
+        }
+
+        return true;
+    }
+
+
+    void solve(int col, vector<string> &board, vector<vector<string>> &ans, int n) {
+        //base case is last column reach
+        if (col == n) {
+            ans.push_back(board);
+            return;
+        }
+
+        //L6 recursion (pre-requisit of DP)
+        for(int row = 0; row < n; row++) 
+        {
+            if (isSafe(row, col, board, n)) 
+            {
+                board[row][col] = 'Q'; //take
+                solve(col+1, board, ans, n);
+                board[row][col] = '.'; //not take
+            }
+        }
+    }
+
+
+    vector<vector<string>> solveNQueens(int n) 
+    {
+        vector<vector<string>> ans;
+        vector<string> board(n);
+        string s(n, '.');
+        for(int i = 0; i < n; i++) 
+        {
+            board[i] = s;
+        }
+
+        solve(0, board, ans, n);
+        return ans;
+    }
+
+};
 
 
 
@@ -188,8 +320,3 @@ int main() {
 }
 
 
-void nextPermutation(vector<int>& nums) {
-
-    next_permutation(nums.begin(), nums.end());
-    
-}

@@ -46,7 +46,8 @@ int knapsack_helper(int ind, int maxWeight, vector<int> &wt_arr, vector<int> &va
 }
 
 // Main function to start the knapsack calculation
-int knapsack_striver_memorization(vector<int> weight_arr, vector<int> value_arr, int n, int maxWeight) //0-1 knapsack // write in 2 function bcz it is neeeded to modify this into "memorisation" and then "tabulation"
+int knapsack_striver_memorization(vector<int> weight_arr, vector<int> value_arr, int n, int maxWeight) 
+//0-1 knapsack // write in 2 function bcz it is neeeded to modify this into "memorisation" and then "tabulation"
 {
     //initialize here the dp for memorization
     vector<vector<int>> dp_matrix(n, vector<int>(maxWeight + 1, -1));
@@ -140,7 +141,8 @@ int knapsack_helper(int ind, int maxWeight, vector<int> &wt_arr, vector<int> &va
 }
 
 // Main function to start the knapsack calculation
-int knapsack_striver_memorization(vector<int> weight_arr, vector<int> value_arr, int n, int maxWeight) //0-1 knapsack // write in 2 function bcz it is neeeded to modify this into "memorisation" and then "tabulation"
+int knapsack_striver_memorization(vector<int> weight_arr, vector<int> value_arr, int n, int maxWeight) 
+//0-1 knapsack // write in 2 function bcz it is neeeded to modify this into "memorisation" and then "tabulation"
 {
     //initialize here the dp for memorization
     vector<vector<int>> dp_matrix(n, vector<int>(maxWeight + 1, -1));
