@@ -1424,3 +1424,97 @@ public:
 };
 
 
+class Solution { //409. Longest Palindrome
+public:
+    // donot use DP bccz of lot permuation nhi ho sakta udhar , and if hoga then too much complex
+    int longestPalindrome(string s) {
+        vector<int> v(1000, 0); // Frequency vector for letters
+        int odd = 0; // Count of characters which have odd frequency
+        int m = s.size(); // Length of string
+
+        // Loop through each character in the string
+        for (int i = 0; i <= m-1; i++) {
+            // Increment frequency of the character
+            v[s[i] - 'A']++;
+
+            // If the frequency of that character becomes odd, increment 'odd', otherwise decrement 'odd'
+            if (v[s[i] - 'A'] % 2 == 1) {
+                odd++;
+            } else {
+                odd--;
+            }
+        }
+
+        // If more than one character has odd frequency, return the adjusted palindrome length
+        if (odd > 1) {
+            return m - odd + 1;
+            // so basicaly this works by removing one characters from each of the characters that appeared odd number of times hencing making each of those character's occurence even times. then just add 1 of them to place in center of palindrome
+        }
+        
+        return m; // If no or only one odd frequency, the entire string can be a palindrome
+    }
+};
+
+
+
+
+class Solution {
+public:
+    vector<int> findDisappearedNumbers(vector<int>& v) { //448. Find All Numbers Disappeared in an Array
+        int n = v.size() ;
+        vector<int> hashv(n+1,0) ;
+        vector<int> ans ;
+
+        for ( int ele : v)
+        {
+            hashv[ele]++ ;
+        }
+
+        for(int i=1 ; i<= hashv.size()-1 ; i++)\
+        {
+            if(hashv[i] == 0) ans.push_back(i);
+        }
+
+        return ans ;
+
+        
+    }
+};
+
+
+
+
+
+
+class Solution { //859. Buddy Strings
+public:
+    bool buddyStrings(string s, string goal) {
+        if (s.length() != goal.length()) return false;
+
+        vector<int> diff;
+        for (int i = 0; i < s.length(); ++i) {
+            if (s[i] != goal[i]) {
+                diff.push_back(i);
+            }
+        }
+
+        if (diff.size() == 2) {
+            // Check if swapping makes them equal
+            return s[diff[0]] == goal[diff[1]] && s[diff[1]] == goal[diff[0]];
+        }
+
+        // If both strings are the same
+        if (diff.empty()) {
+            // Check for duplicates in the string
+            vector<int> count(26, 0);
+            for (char c : s) {
+                count[c - 'a']++;
+                if (count[c - 'a'] > 1) return true; // Found a duplicate
+            }
+            return false; // No duplicates found
+        }
+
+        return false; // More than 2 indix where they differ
+    }
+};
+

@@ -10,39 +10,39 @@ using namespace std;
 
 // Function to calculate the maximum value_arr that can be obtained 
 // with a given weight_arr limit using the first `ind + 1` items
-int knapsack_helper(int ind, int W, vector<int> &wt_arr, vector<int> &val_arr,vector<vector<int>> &dp_matrix) //striver memo
+int knapsack_helper(int ind, int maxWeight, vector<int> &wt_arr, vector<int> &val_arr,vector<vector<int>> &dp_matrix) //striver memo
 {
     // Base case: If we are at the first item (index 0)
-    // We can only take this item if its weight_arr is within the allowed weight_arr `W`
+    // We can only take this item if its weight_arr is within the allowed weight_arr `maxWeight`
     if (ind == 0) 
     {
-        // If the weight_arr of the first item is less than or equal to `W`, take it
-        if (wt_arr[0] <= W) return val_arr[0];
+        // If the weight_arr of the first item is less than or equal to `maxWeight`, take it
+        if (wt_arr[0] <= maxWeight) return val_arr[0];
         // Otherwise, we can't take it, so return 0
         return 0;
     }
 
     // Check if the value_arr is already computed
-    if (dp_matrix[ind][W] != -1) return dp_matrix[ind][W];
+    if (dp_matrix[ind][maxWeight] != -1) return dp_matrix[ind][maxWeight];
 
     // Recursive case 1: Do not take the current item `ind`
-    // The value_arr remains as the result of the previous items (ind - 1) with the same weight_arr limit `W`
-    int notTake = 0 + knapsack_helper(ind -1, W, wt_arr, val_arr,dp_matrix);
+    // The value_arr remains as the result of the previous items (ind - 1) with the same weight_arr limit `maxWeight`
+    int notTake = 0 + knapsack_helper(ind -1, maxWeight, wt_arr, val_arr,dp_matrix);
 
     // Recursive case 2: Take the current item `ind`
     // Initialize `take` as a very small number (negative infinity) to represent that we can't take it initially
     int take = INT_MIN;
 
-    // Check if the current item can be taken (i.e., its weight_arr is less than or equal to the current weight_arr limit `W`)
-    if (wt_arr[ind] <= W)
+    // Check if the current item can be taken (i.e., its weight_arr is less than or equal to the current weight_arr limit `maxWeight`)
+    if (wt_arr[ind] <= maxWeight)
     {
         // If we take the item, add its value_arr to the result of the remaining items with the reduced weight_arr limit
-        take = val_arr[ind] + knapsack_helper(ind-1, W - wt_arr[ind], wt_arr, val_arr, dp_matrix);
+        take = val_arr[ind] + knapsack_helper(ind-1, maxWeight - wt_arr[ind], wt_arr, val_arr, dp_matrix);
     }
 
     // Return the maximum of the two cases: taking or not taking the current item
-    dp_matrix[ind][W] = max(take, notTake); // store the result first
-    return dp_matrix[ind][W];
+    dp_matrix[ind][maxWeight] = max(take, notTake); // store the result first
+    return dp_matrix[ind][maxWeight];
 }
 
 // Main function to start the knapsack calculation
@@ -63,6 +63,38 @@ int knapsack_striver_memorization(vector<int> weight_arr, vector<int> value_arr,
 
 
 
+//tabulation did
+int 01_knapsack_tabulation(vector<int> &wt_arr, vector<int> &val_arr, int n, int maxWeight) {
+    // Create a DP table with dimensions (n x (maxWeight + 1))
+    vector<vector<int>> dp_matrix(n, vector<int>(maxWeight + 1, 0));
+
+    // Base case: Fill the first row of the table
+    // If the weight of the first item is less than or equal to `maxWeight`,
+    // then we can take it and the value is the value of the first item
+    for (int w = wt_arr[0]; w <= maxWeight; w++) {
+        dp_matrix[0][w] = val_arr[0];
+    }
+
+    // Fill the DP table in a bottom-up manner
+    for (int ind = 1; ind < n; ind++) {
+        for (int w = 0; w <= maxWeight; w++) {
+            // Case 1: Do not take the current item
+            int notTake = dp_matrix[ind - 1][w];
+
+            // Case 2: Take the current item (if possible)
+            int take = INT_MIN;
+            if (wt_arr[ind] <= w) {
+                take = val_arr[ind] + dp_matrix[ind - 1][w - wt_arr[ind]];
+            }
+
+            // Store the maximum of the two cases
+            dp_matrix[ind][w] = max(take, notTake);
+        }
+    }
+
+    // The answer is in the bottom-right corner of the DP table
+    return dp_matrix[n - 1][maxWeight];
+}
 
 
 
@@ -74,37 +106,37 @@ int knapsack_striver_memorization(vector<int> weight_arr, vector<int> value_arr,
 
 // Function to calculate the maximum value_arr that can be obtained 
 // with a given weight_arr limit using the first `ind + 1` items
-int knapsack_helper(int ind, int W, vector<int> &wt_arr, vector<int> &val_arr,vector<vector<int>> &dp_matrix) //striver memo
+int knapsack_helper(int ind, int maxWeight, vector<int> &wt_arr, vector<int> &val_arr,vector<vector<int>> &dp_matrix) //striver memo
 {
     // Base case: If we are at the first item (index 0)
-    // We can only take this item if its weight_arr is within the allowed weight_arr `W`
+    // We can only take this item if its weight_arr is within the allowed weight_arr `maxWeight`
     if (ind == 0) 
     {
         // just checking how many 
-        return ((int)(W/wt_arr[0]))*val_arr[0];
+        return ((int)(maxWeight/wt_arr[0]))*val_arr[0];
     }
 
     // Check if the value_arr is already computed
-    if (dp_matrix[ind][W] != -1) return dp_matrix[ind][W];
+    if (dp_matrix[ind][maxWeight] != -1) return dp_matrix[ind][maxWeight];
 
     // Recursive case 1: Do not take the current item `ind`
-    // The value_arr remains as the result of the previous items (ind - 1) with the same weight_arr limit `W`
-    int notTake = 0 + knapsack_helper(ind -1, W, wt_arr, val_arr,dp_matrix);
+    // The value_arr remains as the result of the previous items (ind - 1) with the same weight_arr limit `maxWeight`
+    int notTake = 0 + knapsack_helper(ind -1, maxWeight, wt_arr, val_arr,dp_matrix);
 
     // Recursive case 2: Take the current item `ind`
     // Initialize `take` as a very small number (negative infinity) to represent that we can't take it initially
     int take = INT_MIN;
 
-    // Check if the current item can be taken (i.e., its weight_arr is less than or equal to the current weight_arr limit `W`)
-    if (wt_arr[ind] <= W)
+    // Check if the current item can be taken (i.e., its weight_arr is less than or equal to the current weight_arr limit `maxWeight`)
+    if (wt_arr[ind] <= maxWeight)
     {
         // If we take the item, add its value_arr to the result of the remaining items with the reduced weight_arr limit
-        take = val_arr[ind] + knapsack_helper(ind, W - wt_arr[ind], wt_arr, val_arr, dp_matrix);
+        take = val_arr[ind] + knapsack_helper(ind, maxWeight - wt_arr[ind], wt_arr, val_arr, dp_matrix);
     }
 
     // Return the maximum of the two cases: taking or not taking the current item
-    dp_matrix[ind][W] = max(take, notTake); // store the result first
-    return dp_matrix[ind][W];
+    dp_matrix[ind][maxWeight] = max(take, notTake); // store the result first
+    return dp_matrix[ind][maxWeight];
 }
 
 // Main function to start the knapsack calculation
@@ -124,6 +156,28 @@ int knapsack_striver_memorization(vector<int> weight_arr, vector<int> value_arr,
 
 
 
+int unboundedKnapsack(int n, int maxWeight, vector<int>& val_arr, vector<int>& wt_arr) { //tabulation
+    vector<vector<int>> dp(n, vector<int>(maxWeight + 1, 0)); // Create a DP table
+
+    // Base Condition
+    for (int i = wt_arr[0]; i <= maxWeight; i++) {
+        dp[0][i] = (i / wt_arr[0]) * val_arr[0]; // Calculate the maximum value for the first item
+    }
+
+    for (int ind = 1; ind < n; ind++) {
+        for (int cap = 0; cap <= maxWeight; cap++) {
+            int notTaken = 0 + dp[ind - 1][cap]; // Maximum value without taking the current item
+
+            int taken = INT_MIN;
+            if (wt_arr[ind] <= cap)
+                taken = val_arr[ind] + dp[ind][cap - wt_arr[ind]]; // Maximum value by taking the current item
+
+            dp[ind][cap] = max(notTaken, taken); // Store the maximum value in the DP table
+        }
+    }
+
+    return dp[n - 1][maxWeight]; // Return the maximum value considering all items and the knapsack capacity
+}
 
 
 
@@ -139,37 +193,37 @@ int knapsack_striver_memorization(vector<int> weight_arr, vector<int> value_arr,
 
 // Function to calculate the maximum value_arr that can be obtained 
 // with a given weight_arr limit using the first `ind + 1` items
-int knapsack_helper(int ind, int W, vector<int> &wt_arr, vector<int> &val_arr,vector<vector<int>> &dp_matrix) //striver memo
+int knapsack_helper(int ind, int maxWeight, vector<int> &wt_arr, vector<int> &val_arr,vector<vector<int>> &dp_matrix) //striver memo
 {
     // Base case: If we are at the first item (index 0)
-    // We can only take this item if its weight_arr is within the allowed weight_arr `W`
+    // We can only take this item if its weight_arr is within the allowed weight_arr `maxWeight`
     if (ind == 0) 
     {
         // just checking how many 
-        return ((int)(W/wt_arr[0]))*val_arr[0];
+        return ((int)(maxWeight/wt_arr[0]))*val_arr[0];
     }
 
     // Check if the value_arr is already computed
-    if (dp_matrix[ind][W] != -1) return dp_matrix[ind][W];
+    if (dp_matrix[ind][maxWeight] != -1) return dp_matrix[ind][maxWeight];
 
     // Recursive case 1: Do not take the current item `ind`
-    // The value_arr remains as the result of the previous items (ind - 1) with the same weight_arr limit `W`
-    int notTake = 0 + knapsack_helper(ind -1, W, wt_arr, val_arr,dp_matrix);
+    // The value_arr remains as the result of the previous items (ind - 1) with the same weight_arr limit `maxWeight`
+    int notTake = 0 + knapsack_helper(ind -1, maxWeight, wt_arr, val_arr,dp_matrix);
 
     // Recursive case 2: Take the current item `ind`
     // Initialize `take` as a very small number (negative infinity) to represent that we can't take it initially
     int take = INT_MIN;
 
-    // Check if the current item can be taken (i.e., its weight_arr is less than or equal to the current weight_arr limit `W`)
-    if (wt_arr[ind] <= W)
+    // Check if the current item can be taken (i.e., its weight_arr is less than or equal to the current weight_arr limit `maxWeight`)
+    if (wt_arr[ind] <= maxWeight)
     {
         // If we take the item, add its value_arr to the result of the remaining items with the reduced weight_arr limit
-        take = val_arr[ind] + knapsack_helper(ind, W - wt_arr[ind], wt_arr, val_arr, dp_matrix);
+        take = val_arr[ind] + knapsack_helper(ind, maxWeight - wt_arr[ind], wt_arr, val_arr, dp_matrix);
     }
 
     // Return the maximum of the two cases: taking or not taking the current item
-    dp_matrix[ind][W] = max(take, notTake); // store the result first
-    return dp_matrix[ind][W];
+    dp_matrix[ind][maxWeight] = max(take, notTake); // store the result first
+    return dp_matrix[ind][maxWeight];
 }
 
 // Main function to start the knapsack calculation
@@ -206,6 +260,30 @@ int cutRod(vector<int> &value_arr, int n) //n=rod lenght
 
 
 
+
+// Function to solve the unbounded knapsack problem
+int unboundedKnapsack(int n, int maxWeight, vector<int>& val_arr, vector<int>& wt_arr) { //tabulation for Rod cutting function
+    vector<vector<int>> dp(n, vector<int>(maxWeight + 1, 0)); // Create a DP table
+
+    // Base Condition
+    for (int i = wt_arr[0]; i <= maxWeight; i++) {
+        dp[0][i] = (i / wt_arr[0]) * val_arr[0]; // Calculate the maximum value for the first item
+    }
+
+    for (int ind = 1; ind < n; ind++) {
+        for (int cap = 0; cap <= maxWeight; cap++) {
+            int notTaken = 0 + dp[ind - 1][cap]; // Maximum value without taking the current item
+
+            int taken = INT_MIN;
+            if (wt_arr[ind] <= cap)
+                taken = val_arr[ind] + dp[ind][cap - wt_arr[ind]]; // Maximum value by taking the current item
+
+            dp[ind][cap] = max(notTaken, taken); // Store the maximum value in the DP table
+        }
+    }
+
+    return dp[n - 1][maxWeight]; // Return the maximum value considering all items and the knapsack capacity
+}
 
 
 
@@ -263,6 +341,37 @@ int matrixMultiplication(vector<int> &v, int n)
 }
 
 
+
+
+
+//tabulation
+int matrixMultiplicationTabulation(vector<int> &v, int n) {
+    // Create a DP table with dimensions (n x n)
+    vector<vector<int>> dp_matrix(n, vector<int>(n, 0));
+
+    // Base case: No cost for multiplying one matrix
+    // So, when i == j, dp_matrix[i][i] = 0 (diagonal is 0)
+
+    // Fill the DP table in a bottom-up manner
+    for (int length = 2; length < n; length++) {  // length of the chain (starting from 2 matrices)
+        for (int i = 1; i < n - length + 1; i++) {  // `i` is the starting index
+            int j = i + length - 1;  // `j` is the ending index for the current subproblem
+            dp_matrix[i][j] = INT_MAX;
+
+            // Try all possible splits of the chain
+            for (int k = i; k < j; k++) {
+                // Calculate the cost of multiplying the matrices between i to j
+                int cost = dp_matrix[i][k] + dp_matrix[k + 1][j] + v[i - 1] * v[k] * v[j];
+
+                // Update the dp_matrix with the minimum cost
+                dp_matrix[i][j] = min(dp_matrix[i][j], cost);
+            }
+        }
+    }
+
+    // The final answer (minimum cost) is stored in dp_matrix[1][n-1]
+    return dp_matrix[1][n - 1];
+}
 
 
 
