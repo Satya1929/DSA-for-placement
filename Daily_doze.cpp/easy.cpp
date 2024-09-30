@@ -1735,3 +1735,92 @@ public:
     }
 };
 
+
+class Solution { //3158. Find the XOR of Numbers Which Appear Twice
+public:
+    int duplicateNumbersXOR(vector<int>& nums) {
+        unordered_map<int, int> freq;
+        int result = 0;
+
+        // Count frequency of each number
+        for (int num : nums) {
+            freq[num]++;
+        }
+
+        // XOR the numbers that appear exactly twice
+        for (auto& entry : freq) {
+            if (entry.second == 2) {
+                result ^= entry.first;
+            }
+        }
+
+        return result;
+        
+    }
+};
+
+
+class Solution {//3005. Count Elements With Maximum Frequency
+public:
+    int maxFrequencyElements(vector<int>& v) {
+
+        map<int,int> mpp ;
+
+        for (int ele : v)
+        {
+            mpp[ele]++ ;
+        }
+
+        int maxx = -1 ;
+
+        for(auto itr : mpp)
+        {
+            maxx = max(maxx , itr.second) ;
+        }
+
+        int count = 0 ;
+        for (auto itr : mpp)
+        {
+            if (itr.second == maxx) count += itr.second ;
+        }
+        
+        return count ;
+    }
+};
+
+
+class Solution {//2404. Most Frequent Even Element
+public:
+    int mostFrequentEven(vector<int>& nums) {
+        map<int, int> freqMap;
+
+        // Store frequency of even elements in the map
+        for (int num : nums) {
+            if (num % 2 == 0) { // Only consider even numbers
+                freqMap[num]++;
+            }
+        }
+
+        // If there are no even elements, return -1
+        if (freqMap.empty()) {
+            return -1;
+        }
+
+        int maxFrequency = -1;
+        int result = INT_MAX;
+
+        // Find the most frequent even element
+        for (auto itr : freqMap) {
+            if (itr.second > maxFrequency) {
+                maxFrequency = itr.second;
+                result = itr.first;
+            } 
+            // In case of a tie, return the smallest element
+            else if (itr.second == maxFrequency) {
+                result = min(result, itr.first);
+            }
+        }
+
+        return result;
+    }
+};
