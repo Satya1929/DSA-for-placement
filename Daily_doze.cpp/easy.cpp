@@ -1824,3 +1824,46 @@ public:
         return result;
     }
 };
+
+
+
+bool divideArray(vector<int>& v) { //2206. Divide Array Into Equal Pairs
+    map<int,int> mpp ;
+
+    for (int ele : v)
+    {
+        mpp[ele]++ ;
+    }
+
+    for (auto itr : mpp)
+    {
+        if(itr.second % 2 != 0) return false ;
+    }
+
+    return true ;
+    
+}
+
+
+
+vector<int> intersection(vector<vector<int>>& vv) {//2248. Intersection of Multiple Arrays
+
+    map<int,int> mpp ;
+    vector<int> ans ;
+
+    for(auto vectorr : vv)
+    {
+        for(int ele : vectorr)
+        {
+            mpp[ele]++ ;   
+        }
+    }
+
+    for (auto itr : mpp)
+    {
+        if (itr.second == vv.size()) ans.push_back(itr.first) ;
+    }
+
+    sort(ans.begin() , ans.end()) ;
+    return ans ;
+}
