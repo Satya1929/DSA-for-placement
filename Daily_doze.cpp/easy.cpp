@@ -1867,3 +1867,48 @@ vector<int> intersection(vector<vector<int>>& vv) {//2248. Intersection of Multi
     sort(ans.begin() , ans.end()) ;
     return ans ;
 }
+
+class Solution {//2287. Rearrange Characters to Make Target String
+public:
+    int rearrangeCharacters(string s, string target) {
+        map<char, int> mp;
+        int copy = 0;
+
+        // Step 1: Count the frequency of characters in target
+        for (auto i : target) {
+            mp[i]++;
+        }
+
+        // Step 2: Create a frequency array for the characters in s
+        vector<int> freq(26, 0);
+        for (auto i : s) {
+            if (mp.find(i) != mp.end()) {
+                freq[i - 'a']++;
+            }
+        }
+
+        // Step 3: Calculate how many full copies of target can be made
+        for (auto i : mp) {
+            char target_char = i.first;
+            int target_count = i.second;
+
+            // If this is the first character, set copy to the full copies possible for this character
+            if (copy == 0) 
+            {
+                // update the count when starting
+                copy = freq[target_char - 'a'] / target_count;
+            } else 
+            {
+                // Update copy to the minimum number of full copies that can be made
+                copy = min(copy, freq[target_char - 'a'] / target_count);
+            }
+
+            // If there aren't enough characters for even one full copy, return 0
+            if (freq[target_char - 'a'] < target_count) {
+                return 0;
+            }
+        }
+
+        return copy;
+    }
+};
